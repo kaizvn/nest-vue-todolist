@@ -16,8 +16,9 @@ library.add(fas);
 const app = createApp(App);
 app.component('TodoApp', TodoApp);
 app.component('FaIcon', FontAwesomeIcon);
+
 app.use(axios, {
-  baseUrl: 'https://localhost:3000/api',
+  baseUrl: process.env.SERVICE_API_URL || 'https://localhost:3000/api',
 });
 
 app.mount('#app');
