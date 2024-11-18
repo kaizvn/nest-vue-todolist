@@ -18,7 +18,7 @@ app.component('TodoApp', TodoApp);
 app.component('FaIcon', FontAwesomeIcon);
 
 app.use(axios, {
-  baseUrl: process.env.SERVICE_API_URL || 'http://localhost:3000/api',
+  baseUrl: process.env.SERVICE_API_URL || '/api/',
 });
 
 app.mount('#app');
