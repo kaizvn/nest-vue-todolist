@@ -5,14 +5,7 @@ import { UpdateTaskDTO } from './tasks.dto';
 
 @Injectable()
 export class TasksService {
-  private tasks: Task[] = [
-    {
-      id: '1111',
-      title: 'sample item',
-      isCompleted: false,
-      createdAt: new Date().toUTCString(),
-    },
-  ];
+  private tasks: Task[] = [];
   getAllTasks(): Task[] {
     return this.tasks;
   }
