@@ -20,14 +20,6 @@
             +
           </button>
         </div>
-        <!-- <div class="col-span-1 gap-1">
-          <button
-            class="text-white py-2 px-4 shadow-md w-full rounded bg-red-400 hover:bg-red-600 font-semibold"
-            @click="() => console.log('ok')"
-          >
-            Clear
-          </button>
-        </div> -->
       </div>
     </form>
   </div>

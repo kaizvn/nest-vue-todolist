@@ -12,7 +12,7 @@
       class="text-lg font-semibold rounded shadow-md h-full dark:shadow-white divide-y divide-black-700 [&:hover>div]:opacity-50"
     >
       <div
-        class="grid-col-1 p-3 hover:cursor-pointer hover:!opacity-100"
+        class="grid-col-1 p-2 hover:cursor-pointer hover:!opacity-100"
         v-for="(task, index) in tasks"
         :key="index"
         :class="{

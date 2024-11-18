@@ -19,16 +19,17 @@ const TaskList = defineComponent({
   },
   methods: {
     async doRemove(id: string) {
-      const removeTask = this.onRemove as (id: string) => void;
-      removeTask?.(id);
+      if (this.isEditing) {
+        return;
+      }
 
-      return;
+      this.$parent?.$emit('remove-task', id);
     },
     async doComplete(id: string) {
-      const completeTask = this.onComplete as (id: string) => void;
-      completeTask?.(id);
-
-      return;
+      this.$parent?.$emit('toggle-completeTask', id);
+    },
+    async doUpdate(id: string, info: { title: string; desc?: string }) {
+      this.$parent?.$emit('update-task', id, info, () => this.toggleEditing());
     },
     toggleEditing() {
       if (this.task.isCompleted) {

@@ -1,13 +1,17 @@
 <script lang="ts" src="./TaskItem.ts"></script>
 
 <template>
-  <div class="grid grid-cols-8" :class="{ 'line-through': task.isCompleted }">
-    <div v-if="!isEditing" class="col-span-6" @click="doComplete(task.id)">
+  <div class="grid grid-cols-10" :class="{ 'line-through': task.isCompleted }">
+    <div
+      v-if="!isEditing"
+      class="col-span-7 md:col-span-8 lg:col-span-9"
+      @click="doComplete(task.id)"
+    >
       <span class="text-gray-600 text-lg font-semibold dark:text-white">
         {{ task.title }}
       </span>
     </div>
-    <div v-if="isEditing" class="col-span-6">
+    <div v-if="isEditing" class="col-span-7 md:col-span-8 lg:col-span-9">
       <input
         type="text"
         id="title"
@@ -16,8 +20,12 @@
         v-model="editingTitle"
       />
     </div>
-    <div class="col-span-2 text-right">
-      <span class="text-slate-600 px-2" @click="toggleEditing()">
+    <div class="col-span-3 md:col-span-2 lg:col-span-1 text-right">
+      <span
+        class="text-slate-600 px-2"
+        @click="toggleEditing()"
+        :class="{ hidden: task.isCompleted }"
+      >
         <FaIcon :icon="['fas', 'edit']"></FaIcon>
       </span>
       <span class="text-slate-600 px-2" @click="doRemove(task.id)">
@@ -25,19 +33,22 @@
       </span>
     </div>
   </div>
-  <div class="grid grid-cols-1 pt-3" :class="{ hidden: !isEditing }">
+  <div class="grid grid-cols-1 pt-2" :class="{ hidden: !isEditing }">
     <div class="col-span-1">
       <textarea
         id="message"
         rows="4"
-        class="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+        class="py-3 px-4 block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
         placeholder="Write your description here..."
         v-model="editingDesc"
       ></textarea>
     </div>
     <div class="grid grid-cols-6">
       <div class="col-start-5 col-span-2 text-right pt-4">
-        <span class="text-green-600 p-2" @click="toggleEditing()">
+        <span
+          class="text-green-600 p-2"
+          @click="doUpdate(task.id, { desc: editingDesc, title: editingTitle })"
+        >
           <FaIcon :icon="['fas', 'check']"></FaIcon>
         </span>
         <span class="text-red-600 p-2" @click="toggleEditing()">

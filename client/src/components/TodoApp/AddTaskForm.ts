@@ -1,4 +1,3 @@
-import { Task } from '@/types/tasks';
 import { defineComponent } from 'vue';
 
 const AddTaskForm = defineComponent({
@@ -10,12 +9,13 @@ const AddTaskForm = defineComponent({
   },
   name: 'AddTaskForm',
   methods: {
-    async doSubmit(): Promise<Task> {
-      const createTask = this.onCreate as (title: string) => Promise<Task>;
-      const newTask = await createTask?.(this.title);
-      this.title = '';
-
-      return newTask;
+    async doSubmit(): Promise<void> {
+      if (!this.title.trim()) {
+        return;
+      }
+      this.$emit('create-task', this.title, () => {
+        this.title = '';
+      });
     },
   },
 });

@@ -2,6 +2,8 @@ import { defineComponent } from 'vue';
 import { Task } from '@/types/tasks';
 import AddTaskForm from './AddTaskForm.vue';
 import TaskList from './TaskList.vue';
+import { AxiosResponse } from 'axios';
+import { Callback } from '@/types/utils';
 
 const TodoApp = defineComponent({
   name: 'TodoApp',
@@ -14,76 +16,88 @@ const TodoApp = defineComponent({
     AddTaskForm,
     TaskList,
   },
-  provide() {
-    return {
-      onCreate: this.addTask,
-      onRemove: this.removeTask,
-      onComplete: this.completeTask,
-    };
-  },
   methods: {
-    async getTasks(): Promise<Task[]> {
-      //return this.$axios.get('/tasks');
-      return [
-        {
-          id: '1',
-          title: 'my first',
-          desc: 'default no description',
-        },
-      ];
-    },
-    async addTask(title: string): Promise<Task> {
-      const newTask: Task = {
-        id: String(Date.now()),
-        title,
-      };
+    async getAllTasks(callback?: Callback): Promise<Task[]> {
+      try {
+        const resp: AxiosResponse<Task[]> = await this.$axios.get(`/tasks`);
+        callback?.(resp);
 
-      this.tasks.unshift(newTask);
-      return newTask;
+        return resp.data;
+      } catch (err) {
+        console.error(err);
+        return [];
+      }
     },
-    async removeTask(id: string) {
-      const taskIndex = this.tasks.findIndex((task) => task.id === id);
-      const _tasks = [...this.tasks];
-      _tasks.splice(taskIndex, 1);
-      this.tasks = _tasks;
+    async getTask(id: string, callback?: Callback) {
+      try {
+        const resp: AxiosResponse<Task> = await this.$axios.get(`/tasks/${id}`);
+        callback?.(resp);
 
-      return;
+        return resp.data;
+      } catch (err) {
+        console.error(err);
+        return;
+      }
     },
-    async clearTasks() {
-      this.tasks = [];
-      return;
-    },
-    async updateTask(id: string, info: Task) {
-      return info;
-    },
-    async completeTask(id: string) {
-      const taskIndex = this.tasks.findIndex((task) => task.id === id);
-      const _tasks = [...this.tasks];
-      _tasks[taskIndex].isCompleted = !_tasks[taskIndex].isCompleted;
-      this.tasks = _tasks;
+    async addTask(title: string, callback?: Callback) {
+      try {
+        const resp: AxiosResponse<Task> = await this.$axios.post('/tasks', {
+          title,
+        });
 
-      return;
+        this.tasks = [resp.data, ...this.tasks];
+
+        callback?.(resp);
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    async removeTask(id: string, callback?: Callback) {
+      try {
+        const resp = await this.$axios.delete(`/tasks/${id}`);
+
+        const index = this.tasks.findIndex((task) => task.id === id);
+        const tasks = [...this.tasks];
+        tasks.splice(index, 1);
+        this.tasks = tasks;
+
+        callback?.(resp);
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    async updateTask(id: string, info: Task, callback?: Callback) {
+      try {
+        const resp: AxiosResponse<Task> = await this.$axios.patch(
+          `tasks/${id}`,
+          info,
+        );
+        const index = this.tasks.findIndex((task) => task.id === id);
+        this.tasks[index] = resp.data;
+
+        callback?.(resp);
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    async toggleCompleteTask(id: string, callback?: Callback) {
+      try {
+        const resp: AxiosResponse<Task> = await this.$axios.patch(
+          `tasks/${id}/complete`,
+        );
+        const index = this.tasks.findIndex((task) => task.id === id);
+        this.tasks[index].isCompleted = resp.data.isCompleted;
+
+        callback?.(resp);
+      } catch (err) {
+        console.error(err);
+      }
     },
   },
 
   async beforeMount() {
-    this.tasks = await this.getTasks();
+    this.tasks = await this.getAllTasks();
   },
 });
 
 export default TodoApp;
-
-// function addTodo() {
-//     if (newTodo.value !== "") {
-//         todos.value.push({
-//             complete: false, text: newTodo.value
-//         });
-//         newTodo.value = "";
-//     }
-// }
-// // function removeAllTodos() {
-// //   todos.value.splice(0, todos.value.length);
-// // }
-// function completedTodo(todo) {
-//     todo.complete = !todo.complete;
-// }

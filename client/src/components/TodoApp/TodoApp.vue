@@ -10,10 +10,15 @@
           Todo List
         </h1>
         <div class="mt-6">
-          <AddTaskForm />
+          <AddTaskForm v-on:create-task="addTask" />
         </div>
         <div class="mt-8">
-          <TaskList :tasks="tasks" />
+          <TaskList
+            :tasks="tasks"
+            v-on:update-task="updateTask"
+            v-on:toggle-completeTask="toggleCompleteTask"
+            v-on:remove-task="removeTask"
+          />
         </div>
       </div>
     </div>
